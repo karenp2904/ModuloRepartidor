@@ -1,4 +1,4 @@
-package VistaRepartidor;
+import VistaRepartidor.VistaPrincipalRepartidor;
 
 public class MainRepartidor {
     public static void main(String[] args) {

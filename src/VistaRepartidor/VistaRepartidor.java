@@ -1,10 +1,21 @@
 package VistaRepartidor;
 
+import ControladorRepartidor.ControladorRepartidor;
+import Estructuras.Colas.ColasList;
+import Estructuras.DinamicQueue.Queue;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.Properties;
+
 
 public class VistaRepartidor extends JFrame {
     JLabel fondo = new JLabel();
@@ -13,6 +24,8 @@ public class VistaRepartidor extends JFrame {
     JPanel panelBlanco = new JPanel();
     JPanel panelPedidos=new JPanel();
     JPanel panelRuta=new JPanel();
+    JTextField txusuario=new JTextField();
+    JTextField txcontraseña=new JTextField();
     Icon  iconoEntregado,iconoEncamino,iconoesperando;
     int contador=1;
     public VistaRepartidor(){
@@ -34,7 +47,7 @@ public class VistaRepartidor extends JFrame {
 
         JLabel logo=new JLabel("Logo");
         logo.setBounds(110,10,150,150);
-        ImageIcon imgLogo= new ImageIcon("ModuloRepartidor/src/Imagenes/logoPerrito.png");// se le pone icono a boton
+        ImageIcon imgLogo= new ImageIcon("src/Imagenes/logoPerrito.png");// se le pone icono a boton
         Icon ilogo= new ImageIcon(imgLogo.getImage().getScaledInstance(logo.getWidth(), logo.getHeight(), Image.SCALE_DEFAULT));
         logo.setIcon(ilogo);
         panelBlanco.add(logo);
@@ -50,23 +63,29 @@ public class VistaRepartidor extends JFrame {
         nombreUsuario.setBounds(40,180,200,100);
         panelBlanco.add(nombreUsuario);
 
-       String usuario=verificarUsuario();
+
+        txusuario.setBounds(30,250,300,40);
+        panelBlanco.add(txusuario);
 
         JLabel contraseña=new JLabel("Contraseña");
         contraseña.setBounds(40,290,200,100);
         panelBlanco.add(contraseña);
 
-       String validarContraseña=verificarContraseña();
+
+        txcontraseña.setBounds(30,360,300,40);
+        panelBlanco.add(txcontraseña);
+
+
 
         JButton botonRegistrar=new JButton();
         botonRegistrar.setBounds(140, 420, 100, 50);
-        ImageIcon img= new ImageIcon("ModuloRepartidor/src//Imagenes/INGRESAR.png");// se le pone icono a boton
+        ImageIcon img= new ImageIcon("src/Imagenes/INGRESAR.png");// se le pone icono a boton
         Icon i= new ImageIcon(img.getImage().getScaledInstance(botonRegistrar.getWidth(), botonRegistrar.getHeight(), Image.SCALE_DEFAULT));
         botonRegistrar.setIcon(i);
         botonRegistrar.setLayout(null);
         botonRegistrar.setOpaque(true);
         botonRegistrar.setBorderPainted(false);
-        ImageIcon imgadmin= new ImageIcon("ModuloRepartidor/src//Imagenes/INGRESAR2.png");// se le pone icono a boton
+        ImageIcon imgadmin= new ImageIcon("src/Imagenes/INGRESAR2.png");// se le pone icono a boton
         Icon iconAdmin= new ImageIcon(imgadmin.getImage().getScaledInstance(botonRegistrar.getWidth(), botonRegistrar.getHeight(), Image.SCALE_DEFAULT));
         botonRegistrar.setRolloverIcon(iconAdmin);
         botonRegistrar.setBackground(Color.white);
@@ -74,11 +93,35 @@ public class VistaRepartidor extends JFrame {
         botonRegistrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelBlanco.setVisible(false);
-                panelInicio.setVisible(false);
-                panelPedidos.setVisible(true);
-                panelRutas();
-                contenedor.add(panelPedidos,Integer.valueOf(7));
+                Properties properties = new Properties();
+                try {
+                    properties.load(new FileInputStream(new File("src/client.properties")));
+                    ControladorRepartidor client = new ControladorRepartidor(
+                            (String) properties.get("IP"),
+                            (String) properties.get("PORTS"),
+                            (String) properties.get("SERVICES"));
+
+                    boolean valido=client.validarUsuario(txusuario.getText(),txcontraseña.getText());
+                    client.disponibilidadRepartidor();
+                    editarRutaEntrega(client.imprimirRuta());
+                    if(valido){
+                        panelBlanco.setVisible(false);
+                        panelInicio.setVisible(false);
+                        panelPedidos.setVisible(true);
+                        panelRutas();
+                        contenedor.add(panelPedidos,Integer.valueOf(7));
+                    }else{
+                        JOptionPane.showInputDialog("INTENTO INCORRECTO");
+                    }
+
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                } catch (FileNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
 
             }
         });
@@ -87,7 +130,7 @@ public class VistaRepartidor extends JFrame {
         //se llama al contenedor
         contenedor();
 
-        ImageIcon imagen =new ImageIcon("ModuloRepartidor/src/Imagenes/loginRepartidor.png");
+        ImageIcon imagen =new ImageIcon("src/Imagenes/loginRepartidor.png");
         fondo.setIcon(imagen);
         fondo.setSize(imagen.getIconWidth(), imagen.getIconHeight());
         //fondo.setBounds(100,40,1400,600);
@@ -95,23 +138,8 @@ public class VistaRepartidor extends JFrame {
         contenedor.add(panelBlanco,Integer.valueOf(5));
         contenedor.add(fondo,Integer.valueOf(4));
     }
-    public String verificarUsuario(){
-        JTextField txusuario=new JTextField();
-        txusuario.setBounds(30,250,300,40);
-        panelBlanco.add(txusuario);
-        String usuario=txusuario.getText();
-        return usuario;
-    }
-    public String verificarContraseña(){
-        JTextField txcontraseña=new JTextField();
-        txcontraseña.setBounds(30,360,300,40);
-        panelBlanco.add(txcontraseña);
-        String contraseña=txcontraseña.getText();
-        return contraseña;
-    }
 
-    public void panelRutas(){
-
+    public void panelRutas() {
         panelPedidos.setLayout(null);
         panelPedidos.setVisible(true);
         panelPedidos.setOpaque(true);
@@ -138,26 +166,22 @@ public class VistaRepartidor extends JFrame {
         nombretext.setBounds(200, -40, 200, 100);
         panelPedidos.add(nombretext);
 
-        JLabel fondoLetras=new JLabel();
-        ImageIcon imagen =new ImageIcon("ModuloRepartidor/src/Imagenes/fondoLetras.png");
+        JLabel fondoLetras = new JLabel();
+        ImageIcon imagen = new ImageIcon("src/Imagenes/fondoLetras.png");
         fondoLetras.setIcon(imagen);
         fondoLetras.setSize(imagen.getIconWidth(), imagen.getIconHeight());
         //fondo.setBounds(100,40,1400,600);
         this.setSize(imagen.getIconWidth(), imagen.getIconHeight());
 
-        contenedor.add(letreroEntrega,Integer.valueOf(7));
-        contenedor.add(fondoLetras,Integer.valueOf(5));
-        contenedor.add(panelRuta,Integer.valueOf(6));
-        contenedor.add(panelPedidos,Integer.valueOf(7));
+        contenedor.add(letreroEntrega, Integer.valueOf(7));
+        contenedor.add(fondoLetras, Integer.valueOf(5));
+        contenedor.add(panelRuta, Integer.valueOf(6));
+        contenedor.add(panelPedidos, Integer.valueOf(7));
 
-        editarEntregaPedidos("Salchipapa");
-        editarEntregaPedidos("Perro caliente");
-        editarEntregaPedidos("Perro Extra Grande");
-        editarEntregaPedidos("Salchipapa");
     }
 
-    public void editarRutaEntre(){
-        //Grafo
+    public void editarRutaEntrega(Queue colas){
+
     }
 
     JLabel pedidosText=new JLabel();
@@ -180,7 +204,7 @@ public class VistaRepartidor extends JFrame {
         yBotones=yBotones+70;
         //se edita la altura del texto
         //cuando el boton dice esperando
-        ImageIcon imgenEsperando= new ImageIcon("ModuloRepartidor/src/Imagenes/esperando.png");// se le pone icono a boton
+        ImageIcon imgenEsperando= new ImageIcon("src/Imagenes/esperando.png");// se le pone icono a boton
         iconoesperando= new ImageIcon(imgenEsperando.getImage().getScaledInstance(botonEstado.getWidth(), botonEstado.getHeight(), Image.SCALE_DEFAULT));
         botonEstado.setIcon(imgenEsperando);
         botonEstado.setLayout(null);
@@ -188,11 +212,11 @@ public class VistaRepartidor extends JFrame {
         botonEstado.setBorderPainted(false);
 
         //cuando el boton dice encamino
-        ImageIcon imEncamino= new ImageIcon("ModuloRepartidor/src/Imagenes/encamino.png");// se le pone icono a boton
+        ImageIcon imEncamino= new ImageIcon("src/Imagenes/encamino.png");// se le pone icono a boton
         iconoEncamino= new ImageIcon(imEncamino.getImage().getScaledInstance(botonEstado.getWidth(), botonEstado.getHeight(), Image.SCALE_DEFAULT));
 
         //cuando el boton dice entregado
-        ImageIcon imgEntregado= new ImageIcon("ModuloRepartidor/src/Imagenes/encamino.png");// se le pone icono a boton
+        ImageIcon imgEntregado= new ImageIcon("src/Imagenes/encamino.png");// se le pone icono a boton
         iconoEntregado = new ImageIcon(imgEntregado.getImage().getScaledInstance(botonEstado.getWidth(), botonEstado.getHeight(), Image.SCALE_DEFAULT));
 
 

@@ -1,6 +1,6 @@
 package Estructuras.APriorityQueue;
 
-public interface QueueInterface {
+public interface QueueInterface<T> {
 	public void clear();
 	public boolean isEmpty();
 	public Object extract();
