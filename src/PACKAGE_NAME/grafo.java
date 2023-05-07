@@ -41,14 +41,14 @@ public class grafo {
 
         try {
             // Cargar el XML
-            File inputFile = new File("clientes.xml");
+            File inputFile = new File("factura.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
             doc.getDocumentElement().normalize();
 
             // Recorrer los elementos de cliente y agregar los valores de domicilio al diccionario
-            NodeList nodeList = doc.getElementsByTagName("Cliente");
+            NodeList nodeList = doc.getElementsByTagName("Factura");
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
