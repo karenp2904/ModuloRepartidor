@@ -181,7 +181,23 @@ public class VistaRepartidor extends JFrame {
     }
 
     public void editarRutaEntrega(Queue colas){
+        int y=50;//se define la altura
 
+        while(colas.size()!=0 || colas!=null) {
+            JLabel titulo = new JLabel(colas.extract().toString());
+            titulo.setBackground(Color.black);
+            titulo.setFont(new Font("Arial", Font.BOLD, 20));
+            titulo.setBounds(100, y, 600, 100);
+            panelRuta.add(titulo);
+
+            y += 40;//se le agrega distancia a y para la ubicacion del texto
+            //otorga espacios
+            JLabel espacio = new JLabel();
+            espacio.setBackground(Color.white);
+            espacio.setFont(new Font("Arial", Font.BOLD, 20));
+            espacio.setBounds(100, y + 10, 600, 100);
+            panelRuta.add(espacio);
+        }
     }
 
     JLabel pedidosText=new JLabel();
