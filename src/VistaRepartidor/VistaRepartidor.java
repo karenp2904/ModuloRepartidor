@@ -2,6 +2,7 @@ package VistaRepartidor;
 
 import ControladorRepartidor.ControladorRepartidor;
 import Estructuras.Colas.ColasList;
+import Estructuras.DinamicQueue.Queue;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Properties;
-import java.util.Queue;
+
 
 public class VistaRepartidor extends JFrame {
     JLabel fondo = new JLabel();
@@ -94,7 +95,7 @@ public class VistaRepartidor extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 Properties properties = new Properties();
                 try {
-                    properties.load(new FileInputStream(new File("client.properties")));
+                    properties.load(new FileInputStream(new File("src/client.properties")));
                     ControladorRepartidor client = new ControladorRepartidor(
                             (String) properties.get("IP"),
                             (String) properties.get("PORTS"),
