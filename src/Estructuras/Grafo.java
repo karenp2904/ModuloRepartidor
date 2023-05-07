@@ -1,3 +1,5 @@
+package Estructuras;
+
 import Estructuras.APriorityQueue.PriorityQueue;
 import Estructuras.DinamicQueue.Queue;
 import Estructuras.ListasEnlaceDoble.LinkedList;
@@ -39,10 +41,10 @@ public class Grafo {
                 coladinamica.insert(new Vertice(origen,0));
             } else {
                 distancias.put(vertice, Integer.MAX_VALUE);
-                coladinamica.insert(new Vertice(vertice, Integer.MAX_VALUE);
+               // coladinamica.insert(new Vertice(vertice, Integer.MAX_VALUE);
             }
         }
-
+/*
         while (!cola.isEmpty()) {
             Vertice actual = (Vertice) cola.extract();
 
@@ -56,8 +58,10 @@ public class Grafo {
                     coladinamica.insert(vecino);
                 }
             }
-        }
 
+
+        }
+ */
         return distancias;
     }
 

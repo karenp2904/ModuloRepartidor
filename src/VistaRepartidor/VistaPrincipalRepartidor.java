@@ -1,9 +1,17 @@
 package VistaRepartidor;
 
+import ControladorRepartidor.ControladorRepartidor;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.Properties;
 
 public class VistaPrincipalRepartidor extends JFrame {
     //inicializando
@@ -46,13 +54,13 @@ public class VistaPrincipalRepartidor extends JFrame {
 
         botonIniciar = new JButton("ENTRAR");
         botonIniciar.setBounds(600, 570, 230, 80);
-        ImageIcon img= new ImageIcon("ModuloRepartidor/src/Imagenes/INICIO.png");// se le pone icono a boton
+        ImageIcon img= new ImageIcon("src/Imagenes/INICIO.png");// se le pone icono a boton
         Icon i= new ImageIcon(img.getImage().getScaledInstance(botonIniciar.getWidth(), botonIniciar.getHeight(), Image.SCALE_DEFAULT));
         botonIniciar.setIcon(i);
         botonIniciar.setLayout(null);
         botonIniciar.setOpaque(true);
         botonIniciar.setBorderPainted(false);
-        ImageIcon imgJugar1= new ImageIcon("ModuloRepartidor/src/Imagenes/INICIO2.png");// se le pone icono a boton
+        ImageIcon imgJugar1= new ImageIcon("src/Imagenes/INICIO2.png");// se le pone icono a boton
         Icon iconIniciar= new ImageIcon(imgJugar1.getImage().getScaledInstance(botonIniciar.getWidth(), botonIniciar.getHeight(), Image.SCALE_DEFAULT));
         botonIniciar.setRolloverIcon(iconIniciar);
         botonIniciar.setBackground(Color.white);
@@ -61,9 +69,10 @@ public class VistaPrincipalRepartidor extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 VistaRepartidor vista=new VistaRepartidor();
+                vista.setVisible(true);
+                vista.setExtendedState(MAXIMIZED_BOTH);
                 vista.panelRegistro();
                 dispose();
-
             }
         });
         panelInicio.add(botonIniciar);
@@ -71,14 +80,14 @@ public class VistaPrincipalRepartidor extends JFrame {
         botonSalir = new JButton("Salir");
         botonSalir.setBounds(1100, 600, 200, 70);
         //botonReglas.setFont(new Font("BeaufortforLOL-Bold", Font.ITALIC, 12));
-        ImageIcon imgSalir3= new ImageIcon("ModuloRepartidor/src/Imagenes/SALIR.png");// se le pone icono a boton
+        ImageIcon imgSalir3= new ImageIcon("src/Imagenes/SALIR.png");// se le pone icono a boton
         Icon iconSalir= new ImageIcon(imgSalir3.getImage().getScaledInstance(botonSalir.getWidth(), botonSalir.getHeight(), Image.SCALE_DEFAULT));
         botonSalir.setIcon(iconSalir);
         botonSalir.setOpaque(false);
         botonSalir.setBorderPainted(false);
         botonSalir.setBackground(Color.white);
 
-        ImageIcon imgSalirD= new ImageIcon("ModuloRepartidor/src/Imagenes/SALIR2.png");// se le pone icono a boton
+        ImageIcon imgSalirD= new ImageIcon("src/Imagenes/SALIR2.png");// se le pone icono a boton
         Icon iconSalirD= new ImageIcon(imgSalirD.getImage().getScaledInstance(botonSalir.getWidth(), botonSalir.getHeight(), Image.SCALE_DEFAULT));
         botonSalir.setRolloverIcon(iconSalirD);
 
@@ -97,14 +106,12 @@ public class VistaPrincipalRepartidor extends JFrame {
 
 
 
-    public void panelContenedor(){
-        ImageIcon imagen =(new ImageIcon("ModuloRepartidor/src/Imagenes/Logo.jpeg"));
+    public void panelContenedor() {
+        ImageIcon imagen = (new ImageIcon("src/Imagenes/Logo.jpeg"));
         fondo.setIcon(imagen);
         fondo.setSize(imagen.getIconWidth(), imagen.getIconHeight());
-        fondo.setBounds(100,40,1400,600);
+        fondo.setBounds(100, 40, 1400, 600);
         //fondo.setBounds(100,0,1000,70);
-
-
 
         contenedor.add(panelBlanco,Integer.valueOf(0));
         contenedor.add(fondo,Integer.valueOf(1));
